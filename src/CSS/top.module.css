@@ -4,7 +4,6 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  background-color: rgb(66, 154, 176);
 }
 .navBar {
   border: 1px solid black;
@@ -19,7 +18,7 @@
   height: 60%;
   width: 40%;
   border-radius: 2rem;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.5);
   border: none;
   padding: 0px 20px 0px 20px;
   outline: none;
@@ -52,7 +51,7 @@
 }
 
 .map {
-  width: 15%;
+  flex:1;
   height: 50px;
   border: 1px solid black;
   display: flex;
@@ -72,7 +71,7 @@
   transform: scale(1.25);
 }
 .currentLocation {
-  width: 15%;
+  flex:1;
   height: 80%;
   border: 2px solid red;
   display: flex;
@@ -99,17 +98,54 @@
   flex-direction: column;
 }
 
-.weatherIcon{
-    flex:3;
-    border: 1px solid black;
+.weatherIcon {
+  flex: 3;
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.7;
 }
 
-.currentInfo{
-    flex:1;
-    border: 1px solid black;
+.currentInfo {
+  flex: 1;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 5%;
 }
 
 .right {
   flex: 2;
   border: 1px solid black;
+}
+
+.temp {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: rgb(38, 38, 38);
+  border-radius: 25px 25px 0px 0px;
+}
+.lowHigh {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  font-size: 14px;
+  border: 1px solid white;
+}
+
+.otherInfo {
+  flex: 1;
+  width: 70%;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 0px 0px 25px 25px;
 }
