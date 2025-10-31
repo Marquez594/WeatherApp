@@ -19,8 +19,7 @@ export default function Tophalf() {
   const [userLocation, setUserLocation] = useState({ lat: null, log: null });
   const [userData, setUserData] = useState({});
   const [area, setArea] = useState("");
-
-  const conditionToIcon = {};
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -54,6 +53,21 @@ export default function Tophalf() {
     }
   };
 
+  const fetchDataSearch = async () => {
+    try {
+      const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${search}?unitGroup=metric&key=${
+        import.meta.env.VITE_WEATHER_KEY
+      }&include=current,days,hours`;
+      const respone = await fetch(url);
+      const data = await respone.json();
+      console.log(data);
+      setArea(data.resolvedAddress);
+      setUserData(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const fetchArea = async (lat, lon) => {
     try {
       const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`;
@@ -74,13 +88,12 @@ export default function Tophalf() {
   };
 
   const weatherIcon = (condition, time, sunset, sunrise) => {
-    if (!condition || !time || !sunset || !sunrise) return DayClear; // safety check
+    if (!condition || !time || !sunset || !sunrise) return DayClear;
 
     let currenthour = parseInt(time.split(":")[0]);
     let newSun = parseInt(sunset.split(":")[0]);
     let upSun = parseInt(sunrise.split(":")[0]);
 
-    // 🌤️ Daytime cloudy
     if (
       condition.includes("cloudy") &&
       currenthour >= upSun &&
@@ -89,7 +102,6 @@ export default function Tophalf() {
       return DayCloudy;
     }
 
-    // 🌙 Nighttime cloudy
     if (
       condition.includes("cloudy") &&
       (currenthour > newSun || currenthour < upSun)
@@ -97,7 +109,6 @@ export default function Tophalf() {
       return cloudyMoon;
     }
 
-    // 🌞 Daytime clear
     if (
       condition.includes("clear") &&
       currenthour >= upSun &&
@@ -106,7 +117,6 @@ export default function Tophalf() {
       return DayClear;
     }
 
-    // 🌃 Nighttime clear
     if (
       condition.includes("clear") &&
       (currenthour > newSun || currenthour < upSun)
@@ -114,7 +124,7 @@ export default function Tophalf() {
       return nightClear;
     }
 
-    return DayClear; // fallback
+    return DayClear;
   };
 
   const weatherIconNext = (condition) => {
@@ -184,7 +194,6 @@ export default function Tophalf() {
                 display: "Flex",
                 alignItems: "center",
                 justifyContent: "center",
-                border: "1px solid black",
                 gap: "5px",
               }}
             >
@@ -230,7 +239,6 @@ export default function Tophalf() {
                 display: "Flex",
                 alignItems: "center",
                 justifyContent: "center",
-                border: "1px solid black",
                 gap: "5px",
               }}
             >
@@ -298,7 +306,6 @@ export default function Tophalf() {
               display: "Flex",
               alignItems: "center",
               justifyContent: "center",
-              border: "1px solid black",
               gap: "5px",
             }}
           >
@@ -325,7 +332,13 @@ export default function Tophalf() {
       }}
     >
       <div className={styles.navBar}>
-        <div className={styles.currentLocation}>
+        <div
+          className={styles.currentLocation}
+          onClick={() => {
+            fetchData(userLocation.lat, userLocation.log);
+            fetchArea(userLocation.lat, userLocation.log);
+          }}
+        >
           <div
             style={{
               display: "flex",
@@ -349,6 +362,15 @@ export default function Tophalf() {
           type="text"
           className={styles.search}
           placeholder="Search"
+          onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key == "Enter") {
+              e.preventDefault();
+              if (search.trim() !== "") {
+                fetchDataSearch();
+              }
+            }
+          }}
         ></input>
         <div className={styles.map}>
           <h1 className={styles.date} style={{ color: "white" }}>
@@ -411,8 +433,25 @@ export default function Tophalf() {
               </div>
             </div>
             <img
-              src="https://www.clipartqueen.com/image-files/happy-baby-sun.png"
-              style={{ width: "50%" }}
+              src={
+                userData.currentConditions
+                  ? weatherIcon(
+                      userData.currentConditions.icon,
+                      userData.currentConditions.datetime,
+                      userData.currentConditions.sunset,
+                      userData.currentConditions.sunrise
+                    )
+                  : null
+              }
+              style={{
+                width: "70%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+
+                height: "100%",
+                scale: "0.8",
+              }}
             ></img>
           </div>
           <div className={styles.currentInfo}>
