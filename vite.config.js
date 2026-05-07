@@ -4,6 +4,7 @@ import fs from "fs";
 
 export default defineConfig({
   plugins: [react()],
+  base: "/WeatherApp/",
   server: {
     https: {
       key: fs.readFileSync("./cert/key.pem"),
